@@ -1,4 +1,4 @@
-package main
+package decktypestring
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewDeck(t *testing.T) {
-	cards := newDeck()
+	cards := NewDeck()
 
 	if len(cards) != 16 {
 		t.Errorf("The length of deck is wrong, it is %v", len(cards))
@@ -24,7 +24,7 @@ func TestNewDeck(t *testing.T) {
 
 func TestToJsonString(t *testing.T) {
 	cards := deck{"a", "b", "c"}
-	jsonCards := cards.toJsonString()
+	jsonCards := cards.ToJsonString()
 
 	expected := fmt.Sprintf("[%q,%q,%q]", "a", "b", "c")
 	if jsonCards != expected {
@@ -36,20 +36,20 @@ func TestSaveToFileAndReadFromFile(t *testing.T) {
 	testFileName := "test_file"
 	err := os.Remove(testFileName)
 
-	cards := newDeck()
+	cards := NewDeck()
 
-	err = cards.saveToFile(testFileName)
+	err = cards.SaveToFile(testFileName)
 	if err != nil {
 		t.Errorf("save to file failed for error %v", err)
 	}
 
 	var fromFile deck
-	fromFile, err = readFromFile(testFileName)
+	fromFile, err = ReadFromFile(testFileName)
 	if err != nil {
 		t.Errorf("read from file failed for error %v", err)
 	}
 
-	if !(stringSlicesEqual(fromFile, cards)) {
+	if !(StringSlicesEqual(fromFile, cards)) {
 		t.Errorf("read from file failed for error %v", err)
 	}
 

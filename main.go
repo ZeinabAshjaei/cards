@@ -1,7 +1,9 @@
 package main
 
+import "github.com/ZeinabAshjaei/cards/decktypestring"
+
 func main() {
-	cards := newDeck()
+	cards := decktypestring.NewDeck()
 	// dealCards, remainingCards := deal(cards, 5)
 	// dealCards.print()
 	// remainingCards.print()
@@ -24,6 +26,6 @@ func main() {
 	}
 	a.print()*/
 
-	cards.shuffle()
-	cards.print()
+	cards.Shuffle()
+	cards.Print()
 }

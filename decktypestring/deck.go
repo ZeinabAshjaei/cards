@@ -1,4 +1,4 @@
-package main
+package decktypestring
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 
 type deck []string
 
-func newDeck() deck {
+func NewDeck() deck {
 	cards := deck{}
 
 	cardSuites := []string{"Diamonds", "Hearts", "Spades", "Club"}
@@ -25,31 +25,31 @@ func newDeck() deck {
 	return cards
 }
 
-func (d deck) print() {
+func (d deck) Print() {
 	for i, card := range d {
 		fmt.Println(i, card)
 	}
 }
 
-func deal(d deck, handSize int) (deck, deck) {
+func Deal(d deck, handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
 }
 
-func (d deck) toJsonString() string {
+func (d deck) ToJsonString() string {
 	e, _ := json.Marshal(d)
 	return string(e)
 }
 
-func (d deck) toJoinString() string {
+func (d deck) ToJoinString() string {
 	return strings.Join(d, ", ")
 }
 
-func (d deck) saveToFile(fileName string) error {
-	//return os.WriteFile(fileName, []byte(d.toJoinString()), 0666)
-	return os.WriteFile(fileName, []byte(d.toJsonString()), 0666)
+func (d deck) SaveToFile(fileName string) error {
+	//return os.WriteFile(fileName, []byte(d.ToJoinString()), 0666)
+	return os.WriteFile(fileName, []byte(d.ToJsonString()), 0666)
 }
 
-func readFromFile(fileName string) (deck, error) {
+func ReadFromFile(fileName string) (deck, error) {
 	bytes, err := os.ReadFile(fileName)
 	if err != nil {
 		return nil, err
@@ -64,14 +64,14 @@ func readFromFile(fileName string) (deck, error) {
 	return name, err2
 }
 
-func (d deck) shuffle() {
+func (d deck) Shuffle() {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(d), func(i, j int) {
 		d[i], d[j] = d[j], d[i]
 	})
 }
 
-func stringSlicesEqual(a, b deck) bool {
+func StringSlicesEqual(a, b deck) bool {
 	if len(a) != len(b) {
 		return false
 	}
