@@ -1,31 +1,37 @@
 package main
 
-import "github.com/ZeinabAshjaei/cards/decktypestring"
+import (
+	"fmt"
+	"github.com/ZeinabAshjaei/cards/deckstruct"
+	"os"
+)
 
 func main() {
-	cards := decktypestring.NewDeck()
-	// dealCards, remainingCards := deal(cards, 5)
-	// dealCards.print()
-	// remainingCards.print()
+	cards := deckstruct.NewDeck()
+	dealCards, remainingCards := deckstruct.Deal(*cards, 5)
+	dealCards.Print()
+	fmt.Println("###################")
+	remainingCards.Print()
 
 	//a := cards.toJoinString()
 	//fmt.Println(a)
-	//var err error
-	//var a deck
 
-	/*err = cards.saveToFile("my_cards")
+	var err error
+
+	err = cards.SaveToFile("my_cards_struct")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	a, err = readFromFile("my_cards")
+	a, err := deckstruct.ReadFromFile("my_cards_struct")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	a.print()*/
+	a.Print()
 
 	cards.Shuffle()
+	fmt.Println("###################")
 	cards.Print()
 }
