@@ -10,7 +10,7 @@ func TestNewDeck(t *testing.T) {
 	cards := NewDeck()
 
 	if len(cards.Cards) != 16 {
-		t.Errorf("The length of deck is wrong, it is %v", len(cards.Cards))
+		t.Errorf("The length of Deck is wrong, it is %v", len(cards.Cards))
 	}
 
 	if cards.Cards[0] != "Ace of Diamonds" {
@@ -24,7 +24,7 @@ func TestNewDeck(t *testing.T) {
 
 func TestToJsonString(t *testing.T) {
 	myCards := []string{"a", "b", "c"}
-	cards := deck{Cards: myCards}
+	cards := Deck{Cards: myCards}
 	jsonCards := cards.ToJsonString()
 
 	expected := fmt.Sprintf("{\"Cards\":[%q,%q,%q]}", "a", "b", "c")
@@ -44,7 +44,7 @@ func TestSaveToFileAndReadFromFile(t *testing.T) {
 		t.Errorf("save to file failed for error %v", err)
 	}
 
-	var fromFile *deck
+	var fromFile *Deck
 	fromFile, err = ReadFromFile(testFileName)
 	if err != nil {
 		t.Errorf("read from file failed for error %v", err)

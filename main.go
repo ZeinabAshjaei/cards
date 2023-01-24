@@ -8,7 +8,7 @@ import (
 
 func main() {
 	cards := deckstruct.NewDeck()
-	dealCards, remainingCards := deckstruct.Deal(*cards, 5)
+	dealCards, remainingCards := deckstruct.Deal(cards, 5)
 	dealCards.Print()
 	fmt.Println("###################")
 	remainingCards.Print()
