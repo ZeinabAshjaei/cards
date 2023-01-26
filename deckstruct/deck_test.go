@@ -2,7 +2,7 @@ package deckstruct
 
 import (
 	"fmt"
-	"github.com/ZeinabAshjaei/cards/mocks"
+	"github.com/ZeinabAshjaei/cards/filehandling/mocks"
 	"io/fs"
 	"os"
 	"testing"
