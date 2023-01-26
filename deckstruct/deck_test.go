@@ -2,13 +2,13 @@ package deckstruct
 
 import (
 	"fmt"
-	"github.com/ZeinabAshjaei/cards/filehandling"
+	"github.com/ZeinabAshjaei/cards/mocks"
+	"io/fs"
 	"os"
 	"testing"
 )
 
 func TestNewDeck(t *testing.T) {
-	//fs := filehandling.MockFileService{}
 	cards := NewDeck(nil)
 
 	if len(cards.Cards) != 16 {
@@ -35,32 +35,49 @@ func TestToJsonString(t *testing.T) {
 	}
 }
 
-func TestSaveToFileAndReadFromFile(t *testing.T) {
+func TestDeck_SaveToFile(t *testing.T) {
 	testFileName := "test_file"
 	err := os.Remove(testFileName)
 
+	mock := mocks.NewFileManager(t)
+	mock.On("WriteFile",
+		testFileName,
+		[]byte(fmt.Sprintf("{%q:[%q,%q,%q]}", "Cards", "a", "b", "c")),
+		fs.FileMode(0666)).
+		Return(nil)
+
 	expectedDeck := Deck{
 		Cards:       []string{"a", "b", "c"},
-		fileService: filehandling.NewMockFileService(),
+		fileService: mock,
 	}
 
 	err = expectedDeck.SaveToFile(testFileName)
 	if err != nil {
 		t.Errorf("save to file failed for error %v", err)
 	}
+}
 
-	actualDeck := &Deck{
-		fileService: filehandling.NewMockFileService(),
+func TestDeck_ReadFromFile(t *testing.T) {
+	testFileName := "test_file"
+	err := os.Remove(testFileName)
+
+	mock := mocks.NewFileManager(t)
+	mock.On("ReadFile", testFileName).
+		Return([]byte(fmt.Sprintf("{%q:[%q,%q,%q]}", "Cards", "a", "b", "c")), nil)
+
+	expectedDeck := Deck{
+		Cards:       []string{"a", "b", "c"},
+		fileService: mock,
 	}
 
-	err = actualDeck.ReadFromFile(testFileName)
+	err = expectedDeck.ReadFromFile(testFileName)
 	if err != nil {
 		t.Errorf("Cannot read Deck from file")
 	}
 
-	if len(actualDeck.Cards) != 3 ||
-		actualDeck.Cards[0] != expectedDeck.Cards[0] ||
-		actualDeck.Cards[2] != expectedDeck.Cards[2] {
+	if len(expectedDeck.Cards) != 3 ||
+		expectedDeck.Cards[0] != expectedDeck.Cards[0] ||
+		expectedDeck.Cards[2] != expectedDeck.Cards[2] {
 		t.Errorf("Cannot read Deck from file")
 	}
 
