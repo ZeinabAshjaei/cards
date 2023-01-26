@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"github.com/ZeinabAshjaei/cards/deckstruct"
+	"github.com/ZeinabAshjaei/cards/filehandling"
 	"os"
 )
 
 func main() {
-	cards := deckstruct.NewDeck()
-	dealCards, remainingCards := deckstruct.Deal(cards, 5)
+	cards := deckstruct.NewDeck(filehandling.NewFileService())
+
+	/*dealCards, remainingCards := deckstruct.Deal(cards, 5)
 	dealCards.Print()
 	fmt.Println("###################")
-	remainingCards.Print()
+	remainingCards.Print() */
 
 	//a := cards.toJoinString()
 	//fmt.Println(a)
@@ -24,12 +26,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	a, err := deckstruct.ReadFromFile("my_cards_struct")
+	err = cards.ReadFromFile("my_cards_struct")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	a.Print()
+	cards.Print()
 
 	cards.Shuffle()
 	fmt.Println("###################")

@@ -3,17 +3,18 @@ package deckstruct
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ZeinabAshjaei/cards/filehandling"
 	"math/rand"
-	"os"
 	"strings"
 	"time"
 )
 
 type Deck struct {
-	Cards []string
+	Cards       []string
+	fileService filehandling.FileManager
 }
 
-func NewDeck() *Deck {
+func NewDeck(FileService filehandling.FileManager) *Deck {
 	deckCards := make([]string, 0)
 
 	cardSuites := []string{"Diamonds", "Hearts", "Spades", "Club"}
@@ -25,7 +26,10 @@ func NewDeck() *Deck {
 		}
 	}
 
-	d := Deck{Cards: deckCards}
+	d := Deck{
+		Cards:       deckCards,
+		fileService: FileService,
+	}
 	return &d
 }
 
@@ -53,22 +57,22 @@ func (d *Deck) ToJoinString() string {
 
 func (d *Deck) SaveToFile(fileName string) error {
 	//return os.WriteFile(fileName, []byte(d.ToJoinString()), 0666)
-	return os.WriteFile(fileName, []byte(d.ToJsonString()), 0666)
+	return d.fileService.WriteFile(fileName, []byte(d.ToJsonString()), 0666)
 }
 
-func ReadFromFile(fileName string) (*Deck, error) {
-	bytes, err := os.ReadFile(fileName)
+func (d *Deck) ReadFromFile(fileName string) error {
+	fileBytes, err := d.fileService.ReadFile(fileName)
+
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	fmt.Println(string(bytes))
-	//a := strings.Split(string(bytes), ",")
+	err = json.Unmarshal(fileBytes, d)
+	if err != nil {
+		fmt.Println("Cannot convert string representation to deck")
+	}
 
-	name := Deck{}
-	err2 := json.Unmarshal(bytes, &name)
-
-	return &name, err2
+	return nil
 }
 
 func (d *Deck) Shuffle() {

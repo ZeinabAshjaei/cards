@@ -2,12 +2,14 @@ package deckstruct
 
 import (
 	"fmt"
+	"github.com/ZeinabAshjaei/cards/filehandling"
 	"os"
 	"testing"
 )
 
 func TestNewDeck(t *testing.T) {
-	cards := NewDeck()
+	//fs := filehandling.MockFileService{}
+	cards := NewDeck(nil)
 
 	if len(cards.Cards) != 16 {
 		t.Errorf("The length of Deck is wrong, it is %v", len(cards.Cards))
@@ -37,25 +39,33 @@ func TestSaveToFileAndReadFromFile(t *testing.T) {
 	testFileName := "test_file"
 	err := os.Remove(testFileName)
 
-	cards := NewDeck()
+	expectedDeck := Deck{
+		Cards:       []string{"a", "b", "c"},
+		fileService: filehandling.NewMockFileService(),
+	}
 
-	err = cards.SaveToFile(testFileName)
+	err = expectedDeck.SaveToFile(testFileName)
 	if err != nil {
 		t.Errorf("save to file failed for error %v", err)
 	}
 
-	var fromFile *Deck
-	fromFile, err = ReadFromFile(testFileName)
+	actualDeck := &Deck{
+		fileService: filehandling.NewMockFileService(),
+	}
+
+	err = actualDeck.ReadFromFile(testFileName)
 	if err != nil {
-		t.Errorf("read from file failed for error %v", err)
+		t.Errorf("Cannot read Deck from file")
 	}
 
-	if !(StringSlicesEqual(fromFile, cards)) {
-		t.Errorf("read from file failed for error %v", err)
+	if len(actualDeck.Cards) != 3 ||
+		actualDeck.Cards[0] != expectedDeck.Cards[0] ||
+		actualDeck.Cards[2] != expectedDeck.Cards[2] {
+		t.Errorf("Cannot read Deck from file")
 	}
 
-	err3 := os.Remove(testFileName)
-	if err3 != nil {
-		t.Errorf("removing file failed for error %v", err)
+	err = os.Remove(testFileName)
+	if err != nil && !os.IsNotExist(err) {
+		t.Errorf("Error while deleting test file %v", err)
 	}
 }
